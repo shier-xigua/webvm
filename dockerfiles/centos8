@@ -1,0 +1,14 @@
+FROM --platform=i386 centos:8.2
+ARG DEBIAN_FRONTEND=noninteractive
+RUN yum clean all && yum -y update
+RUN yum -y install gcc python3 vim unzip ruby nodejs \
+    fakeroot dbus-base whiptail hexedit patch words \
+    man-pages file luajit make lua dialog curl less \
+    cowsay nmap-ncat
+RUN useradd -m user && echo "password" | passwd --stdin user
+COPY --chown=user:user ./examples /home/user/examples
+RUN chmod -R +x /home/user/examples/lua
+WORKDIR /home/user/
+ENV HOME="/home/user" TERM="xterm" USER="user" SHELL="/bin/bash" EDITOR="vim" LANG="en_US.UTF-8" LC_ALL="C"
+RUN echo "password" | passwd --stdin root
+CMD [ "/bin/bash" ]
